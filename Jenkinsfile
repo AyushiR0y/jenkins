@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     tools {
-        gradle 'Gradle 7+'
+        gradle 'Gradle 7+'  // Ensure this is correctly set in Jenkins global tool config
     }
 
     environment {
-        ARTIFACTORY_CREDENTIALS = credentials('artifactory-crendential')  // your Jenkins credential ID
+        ARTIFACTORY_CREDENTIALS = credentials('artifactory-credential')  // Correct spelling
     }
 
     stages {
@@ -18,25 +18,28 @@ pipeline {
 
         stage('Build Services') {
             steps {
-                sh './user-service/gradlew -p user-service clean build'
-                sh './order-service/gradlew -p order-service clean build'
+                script {
+                    def services = ['user-service', 'order-service']
+                    for (service in services) {
+                        sh "./${service}/gradlew -p ${service} clean build"
+                    }
+                }
             }
         }
 
         stage('Publish to Artifactory') {
             steps {
-                sh '''
-                ./user-service/gradlew -p user-service publish \
-                -Partifactory_user="$ARTIFACTORY_CREDENTIALS_USR" \
-                -Partifactory_password="$ARTIFACTORY_CREDENTIALS_PSW"
-                '''
-                sh '''
-                ./order-service/gradlew -p order-service publish \
-                -Partifactory_user="$ARTIFACTORY_CREDENTIALS_USR" \
-                -Partifactory_password="$ARTIFACTORY_CREDENTIALS_PSW"
-                '''
+                script {
+                    def services = ['user-service', 'order-service']
+                    for (service in services) {
+                        sh """
+                        ./${service}/gradlew -p ${service} publish \\
+                        -Partifactory_user="$ARTIFACTORY_CREDENTIALS_USR" \\
+                        -Partifactory_password="$ARTIFACTORY_CREDENTIALS_PSW"
+                        """
+                    }
+                }
             }
         }
-
     }
 }
