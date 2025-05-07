@@ -21,7 +21,7 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("https://trials23t6q.jfrog.io/artifactory/api/maven/devops_release")
+            url = uri("https://trials23t6q.jfrog.io/artifactory/devops_release")
             credentials {
                 username = findProperty("artifactory_user") as String? ?: ""
                 password = findProperty("artifactory_password") as String? ?: ""
