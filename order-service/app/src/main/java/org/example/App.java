@@ -5,7 +5,7 @@ package org.example;
 
 public class App {
     public String getGreeting() {
-        return "Hello World!";
+        return "Hello World! This is the User enhancement module";
     }
 
     public static void main(String[] args) {
