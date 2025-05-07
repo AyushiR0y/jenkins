@@ -19,6 +19,7 @@ pipeline {
         stage('Build Services') {
             steps {
                 script {
+                    sh 'chmod +x user-service/gradlew'
                     def services = ['user-service', 'order-service']
                     for (service in services) {
                         sh "./${service}/gradlew -p ${service} clean build"
